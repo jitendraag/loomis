@@ -9,12 +9,17 @@ import (
 
 	"os"
 
+	"image/color"
+	"image/draw"
+	"image/jpeg"
 	_ "image/jpeg"
 )
 
 func main() {
 	testFile()
 	testBase64String()
+
+	// writeImage()
 }
 
 func testFile() {
@@ -45,6 +50,19 @@ func testBase64String() {
 	var levels []int = histogramGrayscale(img, 25)
 
 	fmt.Printf("%v\n", levels)
+}
+
+func writeImage() {
+	// TODO, needs error handling
+	img := image.NewRGBA(image.Rect(0, 0, 1, 1))
+	white := color.Gray{255}
+	// black := color.Gray{0}
+
+	draw.Draw(img, img.Bounds(), &image.Uniform{white}, image.ZP, draw.Src)
+
+	out, _ := os.Create("1pixel.jpg")
+	jpeg.Encode(out, img, nil)
+	out.Close()
 }
 
 // Reference image from Golang documentation
