@@ -20,6 +20,9 @@ func main() {
 	testBase64String()
 
 	// writeImage()
+	testIntensityLevels(128)
+	testIntensityLevels(64)
+	testIntensityLevels(4)
 }
 
 func testFile() {
@@ -62,6 +65,26 @@ func writeImage() {
 
 	out, _ := os.Create("1pixel.jpg")
 	jpeg.Encode(out, img, nil)
+	out.Close()
+}
+
+func testIntensityLevels(levelCount int) {
+	// Decode the JPEG data. If reading from file, create a reader with
+	reader, err := os.Open("testdata/green-bee-eater-grayscale.jpg")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer reader.Close()
+
+	img, _, err := image.Decode(reader)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	newImage := reduceIntensityLevels(img, levelCount)
+
+	out, _ := os.Create(fmt.Sprintf("intensity%d.jpg", levelCount))
+	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
 
