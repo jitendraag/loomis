@@ -25,26 +25,5 @@ func reduceIntensityLevels(img image.Image, levelCount int) image.Image {
 		pixels = append(pixels, xPixels)
 	}
 
-	rect := image.Rect(0, 0, len(pixels), len(pixels[0]))
-	newImage := image.NewRGBA(rect)
-
-	// TODO, should this also loop through y first?
-	// TODO, move writing a 2D pixel array to an image to another function
-	for x := 0; x < len(pixels); x++ {
-		for y := 0; y < len(pixels[0]); y++ {
-			q := pixels[x]
-			if q == nil {
-				continue
-			}
-			p := pixels[x][y]
-			// if p == nil {
-			// 	continue
-			// }
-			original, ok := color.GrayModel.Convert(p).(color.Gray)
-			if ok {
-				newImage.Set(x, y, original)
-			}
-		}
-	}
-	return newImage
+	return PixelsToImage(pixels)
 }
