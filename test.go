@@ -26,7 +26,9 @@ func main() {
 
 	// testLogTransformation(100)
 
-	testPowerLawTransformation(1.0, 2.5)
+	// testPowerLawTransformation(1.0, 2.5)
+	// testBitPlaneSlicing(1)
+	testBitPlaneSlicingBitNumber(0)
 }
 
 func testFile() {
@@ -90,6 +92,26 @@ func testPowerLawTransformation(constant float64, gamma float64) {
 	newImage := PowerLawTransformation(img, constant, gamma)
 
 	out, _ := os.Create(fmt.Sprintf("intensity_gamma_transformation%d.jpg", constant))
+	jpeg.Encode(out, newImage, nil)
+	out.Close()
+}
+
+func testBitPlaneSlicing(numberOfBits uint8) {
+	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+
+	newImage := BitPlaneSlicing(img, numberOfBits)
+
+	out, _ := os.Create(fmt.Sprintf("bit_place_splicing%d.jpg", numberOfBits))
+	jpeg.Encode(out, newImage, nil)
+	out.Close()
+}
+
+func testBitPlaneSlicingBitNumber(bitNumber uint8) {
+	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+
+	newImage := BitPlaneSlicingBitNumber(img, bitNumber)
+
+	out, _ := os.Create(fmt.Sprintf("bit_place_splicing%d.jpg", bitNumber))
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
