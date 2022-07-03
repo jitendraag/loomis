@@ -12,7 +12,6 @@ func LogTransformation(img image.Image, constant int) image.Image {
 	// TODO, should the constant be a float?
 	bounds := img.Bounds()
 	var pixels [][]color.Gray
-	// maxGrayscaleLevels
 	var maxIntensity color.Gray
 
 	maxIntensity = color.GrayModel.Convert(img.At(bounds.Min.X, bounds.Min.Y)).(color.Gray)
@@ -28,7 +27,7 @@ func LogTransformation(img image.Image, constant int) image.Image {
 		pixels = append(pixels, xPixels)
 	}
 
-	normaliser := int(maxIntensity.Y) / maxGrayscaleLevels
+	normaliser := int(maxIntensity.Y) / MaxGrayscaleLevels
 	if normaliser != 0 {
 		for rowIndex, row := range pixels {
 			for colIndex, pixel := range row {
@@ -71,7 +70,7 @@ func PowerLawTransformation(img image.Image, constant float64, gamma float64) im
 		pixels = append(pixels, xPixels)
 	}
 
-	normaliser := int(maxIntensity.Y) / maxGrayscaleLevels
+	normaliser := int(maxIntensity.Y) / MaxGrayscaleLevels
 	if normaliser != 0 {
 		for rowIndex, row := range pixels {
 			for colIndex, pixel := range row {

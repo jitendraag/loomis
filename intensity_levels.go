@@ -8,7 +8,7 @@ import (
 func reduceIntensityLevels(img image.Image, levelCount int) image.Image {
 	// This is from Figure 2.21 of DIP book
 	// NOTE: The operation is meant to run on grayscale image only
-	var normaliser uint8 = uint8(maxGrayscaleLevels/levelCount) + 1
+	var normaliser uint8 = uint8(MaxGrayscaleLevels/levelCount) + 1
 	bounds := img.Bounds()
 	var pixels [][]color.Gray
 

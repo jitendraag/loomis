@@ -16,8 +16,8 @@ import (
 )
 
 func main() {
-	testFile()
-	testBase64String()
+	// testFile()
+	// testBase64String()
 
 	// writeImage()
 	// testIntensityLevels(128)
@@ -28,7 +28,9 @@ func main() {
 
 	// testPowerLawTransformation(1.0, 2.5)
 	// testBitPlaneSlicing(1)
-	testBitPlaneSlicingBitNumber(0)
+	// testBitPlaneSlicingBitNumber(0)
+
+	testHistogramEqualisation()
 }
 
 func testFile() {
@@ -101,7 +103,7 @@ func testBitPlaneSlicing(numberOfBits uint8) {
 
 	newImage := BitPlaneSlicing(img, numberOfBits)
 
-	out, _ := os.Create(fmt.Sprintf("bit_place_splicing%d.jpg", numberOfBits))
+	out, _ := os.Create(fmt.Sprintf("bit_plane_splicing%d.jpg", numberOfBits))
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
@@ -111,7 +113,17 @@ func testBitPlaneSlicingBitNumber(bitNumber uint8) {
 
 	newImage := BitPlaneSlicingBitNumber(img, bitNumber)
 
-	out, _ := os.Create(fmt.Sprintf("bit_place_splicing%d.jpg", bitNumber))
+	out, _ := os.Create(fmt.Sprintf("bit_plane_splicing%d.jpg", bitNumber))
+	jpeg.Encode(out, newImage, nil)
+	out.Close()
+}
+
+func testHistogramEqualisation() {
+	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+
+	newImage := HistogramEqualisation(img)
+
+	out, _ := os.Create("histogram_equalisation.jpg")
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
