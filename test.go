@@ -30,14 +30,16 @@ func main() {
 	// testBitPlaneSlicing(1)
 	// testBitPlaneSlicingBitNumber(0)
 
-	testHistogramEqualisation()
+	// testHistogramEqualisation()
+
+	testNormalisedHistogram()
 }
 
 func testFile() {
 	// Decode the JPEG data. If reading from file, create a reader with
 	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
-	var levels []int = histogramGrayscale(img, 2)
+	var levels []int = HistogramGrayscale(img, 2)
 
 	fmt.Printf("%v\n", levels)
 }
@@ -49,7 +51,7 @@ func testBase64String() {
 		log.Fatal(err)
 	}
 
-	var levels []int = histogramGrayscale(img, 25)
+	var levels []int = HistogramGrayscale(img, 25)
 
 	fmt.Printf("%v\n", levels)
 }
@@ -126,4 +128,15 @@ func testHistogramEqualisation() {
 	out, _ := os.Create("histogram_equalisation.jpg")
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
+}
+
+func testNormalisedHistogram() {
+	// Decode the JPEG data. If reading from file, create a reader with
+	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+
+	var probabilities []float64 = NormalisedHistogramGrayscale(img, 0)
+	var meanIntensity float64 = MeanIntensity(img, 0)
+
+	fmt.Printf("Probabilities: %v\n", probabilities)
+	fmt.Printf("Mean intensity: %v\n", meanIntensity)
 }

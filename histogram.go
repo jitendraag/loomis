@@ -8,9 +8,13 @@ import (
 
 const MaxGrayscaleLevels int = 256
 
-func histogramGrayscale(img image.Image, levelCount int) []int {
-	var levels []int = make([]int, levelCount)
-	var normaliser uint8 = uint8(MaxGrayscaleLevels/levelCount) + 1
+func HistogramGrayscale(img image.Image, levelCount int) []int {
+	var levels []int = make([]int, MaxGrayscaleLevels)
+	var normaliser uint8 = 1
+
+	if levelCount > 0 {
+		normaliser = uint8(MaxGrayscaleLevels/levelCount) + 1
+	}
 	bounds := img.Bounds()
 
 	// Not starting from (0,0) as per documentation
@@ -23,6 +27,32 @@ func histogramGrayscale(img image.Image, levelCount int) []int {
 		}
 	}
 	return levels
+}
+
+func NormalisedHistogramGrayscale(img image.Image, levelCount int) []float64 {
+	var levels []int = HistogramGrayscale(img, levelCount)
+	bounds := img.Bounds()
+
+	var probabilities []float64 = make([]float64, MaxGrayscaleLevels)
+	numberOfPixels := bounds.Max.X * bounds.Max.Y
+	for index, count := range levels {
+		probabilities[index] = float64(count) / float64(numberOfPixels)
+	}
+	// fmt.Printf("Probabilities: %v\n", probabilities)
+
+	return probabilities
+}
+
+func MeanIntensity(img image.Image, levelCount int) float64 {
+	var probabilities []float64 = NormalisedHistogramGrayscale(img, levelCount)
+	// TODO: this is being calculated twice here
+	var levels []int = HistogramGrayscale(img, levelCount)
+	var meanIntensity float64 = 0.0
+
+	for index, _ := range levels {
+		meanIntensity += probabilities[index] * float64(index)
+	}
+	return meanIntensity
 }
 
 func HistogramEqualisation(img image.Image) image.Image {
@@ -78,4 +108,9 @@ func HistogramEqualisation(img image.Image) image.Image {
 	}
 
 	return PixelsToImage(pixels)
+}
+
+func HistogramMatching(img image.Image) image.Image {
+	// TODO: Need to understand how specific histogram inputs are given / estimated
+	return img
 }
