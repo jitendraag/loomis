@@ -32,7 +32,10 @@ func main() {
 
 	// testHistogramEqualisation()
 
-	testNormalisedHistogram()
+	// testNormalisedHistogram()
+
+	// testConvertToGrayscale()
+	testSmoothingSpatialFilter()
 }
 
 func testFile() {
@@ -139,4 +142,24 @@ func testNormalisedHistogram() {
 
 	fmt.Printf("Probabilities: %v\n", probabilities)
 	fmt.Printf("Mean intensity: %v\n", meanIntensity)
+}
+
+func testConvertToGrayscale() {
+	img := FileNameToImage("testdata/green-bee-eater-color.jpg")
+
+	newImage := ConvertToGrayscale(img)
+
+	out, _ := os.Create("grayscale.jpg")
+	jpeg.Encode(out, newImage, nil)
+	out.Close()
+}
+
+func testSmoothingSpatialFilter() {
+	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+
+	newImage := SmoothingSpatialFilter(img)
+
+	out, _ := os.Create("smoothing_spatial.jpg")
+	jpeg.Encode(out, newImage, nil)
+	out.Close()
 }

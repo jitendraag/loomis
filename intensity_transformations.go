@@ -157,3 +157,19 @@ func BitPlaneSlicingBitNumber(img image.Image, bitNumber uint8) image.Image {
 
 	return PixelsToImage(pixels)
 }
+
+func ConvertToGrayscale(img image.Image) image.Image {
+	bounds := img.Bounds()
+	var pixels [][]color.Gray
+
+	for x := bounds.Min.X; x < bounds.Max.X; x++ {
+		var xPixels []color.Gray
+		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+			c := color.GrayModel.Convert(img.At(x, y)).(color.Gray)
+			xPixels = append(xPixels, color.Gray{uint8(c.Y)})
+		}
+		pixels = append(pixels, xPixels)
+	}
+
+	return PixelsToImage(pixels)
+}
