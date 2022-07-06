@@ -157,7 +157,7 @@ func testConvertToGrayscale() {
 func testSmoothingSpatialFilter() {
 	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
-	newImage := SmoothingSpatialFilter(img)
+	newImage := SmoothingSpatialFilter(img, FiveByFiveUniform)
 
 	out, _ := os.Create("smoothing_spatial.jpg")
 	jpeg.Encode(out, newImage, nil)

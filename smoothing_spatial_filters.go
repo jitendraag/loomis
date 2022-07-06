@@ -5,33 +5,41 @@ import (
 	"image/color"
 )
 
-var ThreeByThreeUniform = [][]uint8{
-	{1, 1, 1},
-	{1, 1, 1},
-	{1, 1, 1},
+type filterMask func() [][]uint8
+
+func ThreeByThreeUniform() [][]uint8 {
+	return [][]uint8{
+		{1, 1, 1},
+		{1, 1, 1},
+		{1, 1, 1},
+	}
 }
 
-var FiveByFiveUniform = [][]uint8{
-	{1, 1, 1, 1, 1},
-	{1, 1, 1, 1, 1},
-	{1, 1, 1, 1, 1},
-	{1, 1, 1, 1, 1},
-	{1, 1, 1, 1, 1},
+func FiveByFiveUniform() [][]uint8 {
+	return [][]uint8{
+		{1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1},
+	}
 }
 
-var ThreeByThreeWeighted = [][]uint8{
-	{1, 2, 1},
-	{2, 4, 2},
-	{1, 2, 1},
+func ThreeByThreeWeighted() [][]uint8 {
+	return [][]uint8{
+		{1, 2, 1},
+		{2, 4, 2},
+		{1, 2, 1},
+	}
 }
 
-func SmoothingSpatialFilter(img image.Image) image.Image {
+func SmoothingSpatialFilter(img image.Image, maskFn filterMask) image.Image {
 	// This is from Section 3.5.1 of DIP book
 	// TODO, figure out how people pass the masks when they use these filters
 	bounds := img.Bounds()
 	var pixels [][]color.Gray
 
-	var mask [][]uint8 = FiveByFiveUniform
+	var mask [][]uint8 = maskFn()
 	var maskSum uint8 = 0
 
 	for _, row := range mask {
