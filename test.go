@@ -35,7 +35,8 @@ func main() {
 	// testNormalisedHistogram()
 
 	// testConvertToGrayscale()
-	testSmoothingSpatialFilter()
+	// testSmoothingSpatialFilter()
+	testNonlinearSmoothingSpatialFilter()
 }
 
 func testFile() {
@@ -160,6 +161,16 @@ func testSmoothingSpatialFilter() {
 	newImage := SmoothingSpatialFilter(img, FiveByFiveUniform)
 
 	out, _ := os.Create("smoothing_spatial.jpg")
+	jpeg.Encode(out, newImage, nil)
+	out.Close()
+}
+
+func testNonlinearSmoothingSpatialFilter() {
+	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+
+	newImage := NonlinearSmoothingSpatialFilter(img, 10, MedianOrder)
+
+	out, _ := os.Create("nonlinear_smoothing_spatial.jpg")
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
