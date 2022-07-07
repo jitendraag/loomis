@@ -21,3 +21,4 @@ go.work
 
 # Mac specific
 .DS_Store
+**/.DS_Store

@@ -36,7 +36,10 @@ func main() {
 
 	// testConvertToGrayscale()
 	// testSmoothingSpatialFilter()
-	testNonlinearSmoothingSpatialFilter()
+	// testNonlinearSmoothingSpatialFilter()
+	// testLaplacian()
+	// testScaledLaplacian()
+	testScaledLaplacianMaskAddition()
 }
 
 func testFile() {
@@ -168,9 +171,39 @@ func testSmoothingSpatialFilter() {
 func testNonlinearSmoothingSpatialFilter() {
 	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
-	newImage := NonlinearSmoothingSpatialFilter(img, 10, MedianOrder)
+	newImage := NonlinearSmoothingSpatialFilter(img, 5, MedianOrder)
 
 	out, _ := os.Create("nonlinear_smoothing_spatial.jpg")
+	jpeg.Encode(out, newImage, nil)
+	out.Close()
+}
+
+func testLaplacian() {
+	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+
+	newImage := Laplacian(img, LaplacianMask4)
+
+	out, _ := os.Create("laplacian_1.jpg")
+	jpeg.Encode(out, newImage, nil)
+	out.Close()
+}
+
+func testScaledLaplacian() {
+	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+
+	newImage := ScaledLaplacian(img, LaplacianMask1)
+
+	out, _ := os.Create("scaled_laplacian_1.jpg")
+	jpeg.Encode(out, newImage, nil)
+	out.Close()
+}
+
+func testScaledLaplacianMaskAddition() {
+	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+
+	newImage := ScaledLaplacianMaskAddition(img, LaplacianMask1)
+
+	out, _ := os.Create("scaled_laplacian_mask_1.jpg")
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
