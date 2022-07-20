@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/base64"
+	"flag"
 	"fmt"
 	"image"
 	"log"
@@ -16,30 +17,62 @@ import (
 )
 
 func main() {
-	// testFile()
+	// TODO, ideally all new commands should self document
+	var command = flag.String("command", "histgray", "Command to execute, possible options: histgray, intensity_levels, log_transformation")
+	// var inputFileName = flag.String("i", "testdata/green-bee-eater-grayscale.jpg", "Input file name")
+	// var outputFileName = flag.String("o", "testdata/output.jpg", "Output file name")
+	var levels = flag.Float64("levels", 4, "Intensity levels (1 to 256) / constant")
+	var gamma = flag.Float64("gamma", 2.5, "Gamma for power law")
+	var numberOfBits = flag.Uint("bits", 2, "Number of bits to set to zero")
+	var bitNumber = flag.Uint("bit", 2, "Exact bit to set to zero")
+
+	var help = flag.Bool("help", false, "Show help")
+
+	flag.Parse()
+
+	if *help {
+		flag.Usage()
+		os.Exit(0)
+	}
+
+	// fmt.Printf("%v, %v, %v", *command, *inputFileName, *outputFileName)
+
+	switch *command {
+	case "histgray":
+		testFile()
+	case "intensity_levels":
+		testIntensityLevels(int(*levels))
+	case "log_transformation":
+		// Levels being used as the constant
+		testLogTransformation(int(*levels))
+	case "power_law":
+		testPowerLawTransformation(*levels, *gamma)
+	case "bitplane_slicing":
+		testBitPlaneSlicing(uint8(*numberOfBits))
+	case "bitnumber_slicing":
+		testBitPlaneSlicingBitNumber(uint8(*bitNumber))
+	case "histequalisation":
+		testHistogramEqualisation()
+	case "histnormal":
+		testNormalisedHistogram()
+	case "gray":
+		testConvertToGrayscale()
+	case "smooth_spatial":
+		testSmoothingSpatialFilter()
+	case "nonlinear_smooth_spatial":
+		testNonlinearSmoothingSpatialFilter()
+	case "laplacian":
+		testLaplacian()
+	case "scaled_laplacian":
+		testScaledLaplacian()
+	case "scaled_laplacian_mask":
+		testScaledLaplacianMaskAddition()
+	default:
+		flag.Usage()
+	}
+
 	// testBase64String()
-
 	// writeImage()
-	// testIntensityLevels(128)
-	// testIntensityLevels(64)
-	// testIntensityLevels(4)
-
-	// testLogTransformation(100)
-
-	// testPowerLawTransformation(1.0, 2.5)
-	// testBitPlaneSlicing(1)
-	// testBitPlaneSlicingBitNumber(0)
-
-	// testHistogramEqualisation()
-
-	// testNormalisedHistogram()
-
-	// testConvertToGrayscale()
-	// testSmoothingSpatialFilter()
-	// testNonlinearSmoothingSpatialFilter()
-	// testLaplacian()
-	// testScaledLaplacian()
-	testScaledLaplacianMaskAddition()
 }
 
 func testFile() {
@@ -138,7 +171,6 @@ func testHistogramEqualisation() {
 }
 
 func testNormalisedHistogram() {
-	// Decode the JPEG data. If reading from file, create a reader with
 	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
 	var probabilities []float64 = NormalisedHistogramGrayscale(img, 0)
