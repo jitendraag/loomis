@@ -1,4 +1,4 @@
-package main
+package pkg
 
 // Reference image from Golang documentation
 const ImageData1 = `

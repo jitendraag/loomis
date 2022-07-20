@@ -14,6 +14,8 @@ import (
 	"image/draw"
 	"image/jpeg"
 	_ "image/jpeg"
+
+	"github.com/jitendraag/loomis/pkg"
 )
 
 func main() {
@@ -77,21 +79,21 @@ func main() {
 
 func testFile() {
 	// Decode the JPEG data. If reading from file, create a reader with
-	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
-	var levels []int = HistogramGrayscale(img, 2)
+	var levels []int = pkg.HistogramGrayscale(img, 2)
 
 	fmt.Printf("%v\n", levels)
 }
 
 func testBase64String() {
-	reader := base64.NewDecoder(base64.StdEncoding, strings.NewReader(ImageData1))
+	reader := base64.NewDecoder(base64.StdEncoding, strings.NewReader(pkg.ImageData1))
 	img, _, err := image.Decode(reader)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var levels []int = HistogramGrayscale(img, 25)
+	var levels []int = pkg.HistogramGrayscale(img, 25)
 
 	fmt.Printf("%v\n", levels)
 }
@@ -111,9 +113,9 @@ func writeImage() {
 
 func testIntensityLevels(levelCount int) {
 	// Decode the JPEG data. If reading from file, create a reader with
-	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
-	newImage := reduceIntensityLevels(img, levelCount)
+	newImage := pkg.ReduceIntensityLevels(img, levelCount)
 
 	out, _ := os.Create(fmt.Sprintf("intensity%d.jpg", levelCount))
 	jpeg.Encode(out, newImage, nil)
@@ -121,9 +123,9 @@ func testIntensityLevels(levelCount int) {
 }
 
 func testLogTransformation(constant int) {
-	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
-	newImage := LogTransformation(img, constant)
+	newImage := pkg.LogTransformation(img, constant)
 
 	out, _ := os.Create(fmt.Sprintf("intensity_log_transformation%f.jpg", constant))
 	jpeg.Encode(out, newImage, nil)
@@ -131,9 +133,9 @@ func testLogTransformation(constant int) {
 }
 
 func testPowerLawTransformation(constant float64, gamma float64) {
-	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
-	newImage := PowerLawTransformation(img, constant, gamma)
+	newImage := pkg.PowerLawTransformation(img, constant, gamma)
 
 	out, _ := os.Create(fmt.Sprintf("intensity_gamma_transformation%d.jpg", constant))
 	jpeg.Encode(out, newImage, nil)
@@ -141,9 +143,9 @@ func testPowerLawTransformation(constant float64, gamma float64) {
 }
 
 func testBitPlaneSlicing(numberOfBits uint8) {
-	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
-	newImage := BitPlaneSlicing(img, numberOfBits)
+	newImage := pkg.BitPlaneSlicing(img, numberOfBits)
 
 	out, _ := os.Create(fmt.Sprintf("bit_plane_splicing%d.jpg", numberOfBits))
 	jpeg.Encode(out, newImage, nil)
@@ -151,9 +153,9 @@ func testBitPlaneSlicing(numberOfBits uint8) {
 }
 
 func testBitPlaneSlicingBitNumber(bitNumber uint8) {
-	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
-	newImage := BitPlaneSlicingBitNumber(img, bitNumber)
+	newImage := pkg.BitPlaneSlicingBitNumber(img, bitNumber)
 
 	out, _ := os.Create(fmt.Sprintf("bit_plane_splicing%d.jpg", bitNumber))
 	jpeg.Encode(out, newImage, nil)
@@ -161,9 +163,9 @@ func testBitPlaneSlicingBitNumber(bitNumber uint8) {
 }
 
 func testHistogramEqualisation() {
-	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
-	newImage := HistogramEqualisation(img)
+	newImage := pkg.HistogramEqualisation(img)
 
 	out, _ := os.Create("histogram_equalisation.jpg")
 	jpeg.Encode(out, newImage, nil)
@@ -171,19 +173,19 @@ func testHistogramEqualisation() {
 }
 
 func testNormalisedHistogram() {
-	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
-	var probabilities []float64 = NormalisedHistogramGrayscale(img, 0)
-	var meanIntensity float64 = MeanIntensity(img, 0)
+	var probabilities []float64 = pkg.NormalisedHistogramGrayscale(img, 0)
+	var meanIntensity float64 = pkg.MeanIntensity(img, 0)
 
 	fmt.Printf("Probabilities: %v\n", probabilities)
 	fmt.Printf("Mean intensity: %v\n", meanIntensity)
 }
 
 func testConvertToGrayscale() {
-	img := FileNameToImage("testdata/green-bee-eater-color.jpg")
+	img := pkg.FileNameToImage("testdata/green-bee-eater-color.jpg")
 
-	newImage := ConvertToGrayscale(img)
+	newImage := pkg.ConvertToGrayscale(img)
 
 	out, _ := os.Create("grayscale.jpg")
 	jpeg.Encode(out, newImage, nil)
@@ -191,9 +193,9 @@ func testConvertToGrayscale() {
 }
 
 func testSmoothingSpatialFilter() {
-	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
-	newImage := SmoothingSpatialFilter(img, FiveByFiveUniform)
+	newImage := pkg.SmoothingSpatialFilter(img, pkg.FiveByFiveUniform)
 
 	out, _ := os.Create("smoothing_spatial.jpg")
 	jpeg.Encode(out, newImage, nil)
@@ -201,9 +203,9 @@ func testSmoothingSpatialFilter() {
 }
 
 func testNonlinearSmoothingSpatialFilter() {
-	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
-	newImage := NonlinearSmoothingSpatialFilter(img, 5, MedianOrder)
+	newImage := pkg.NonlinearSmoothingSpatialFilter(img, 5, pkg.MedianOrder)
 
 	out, _ := os.Create("nonlinear_smoothing_spatial.jpg")
 	jpeg.Encode(out, newImage, nil)
@@ -211,9 +213,9 @@ func testNonlinearSmoothingSpatialFilter() {
 }
 
 func testLaplacian() {
-	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
-	newImage := Laplacian(img, LaplacianMask4)
+	newImage := pkg.Laplacian(img, pkg.LaplacianMask4)
 
 	out, _ := os.Create("laplacian_1.jpg")
 	jpeg.Encode(out, newImage, nil)
@@ -221,9 +223,9 @@ func testLaplacian() {
 }
 
 func testScaledLaplacian() {
-	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
-	newImage := ScaledLaplacian(img, LaplacianMask1)
+	newImage := pkg.ScaledLaplacian(img, pkg.LaplacianMask1)
 
 	out, _ := os.Create("scaled_laplacian_1.jpg")
 	jpeg.Encode(out, newImage, nil)
@@ -231,9 +233,9 @@ func testScaledLaplacian() {
 }
 
 func testScaledLaplacianMaskAddition() {
-	img := FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
 
-	newImage := ScaledLaplacianMaskAddition(img, LaplacianMask1)
+	newImage := pkg.ScaledLaplacianMaskAddition(img, pkg.LaplacianMask1)
 
 	out, _ := os.Create("scaled_laplacian_mask_1.jpg")
 	jpeg.Encode(out, newImage, nil)

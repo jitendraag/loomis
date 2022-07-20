@@ -1,11 +1,11 @@
-package main
+package pkg
 
 import (
 	"image"
 	"image/color"
 )
 
-func reduceIntensityLevels(img image.Image, levelCount int) image.Image {
+func ReduceIntensityLevels(img image.Image, levelCount int) image.Image {
 	// This is from Figure 2.21 of DIP book
 	// NOTE: The operation is meant to run on grayscale image only
 	var normaliser uint8 = uint8(MaxGrayscaleLevels/levelCount) + 1
