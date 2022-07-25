@@ -72,6 +72,10 @@ func main() {
 		testScaledLaplacian()
 	case "scaled_laplacian_mask":
 		testScaledLaplacianMaskAddition()
+	case "unsharp_masking":
+		testUnsharpMasking()
+	case "unsharp_masking_scaled":
+		testUnsharpMaskingScaled()
 	default:
 		flag.Usage()
 	}
@@ -251,6 +255,26 @@ func testScaledLaplacianMaskAddition() {
 	newImage := pkg.ScaledLaplacianMaskAddition(img, pkg.LaplacianMask1)
 
 	out, _ := os.Create("scaled_laplacian_mask_1.jpg")
+	jpeg.Encode(out, newImage, nil)
+	out.Close()
+}
+
+func testUnsharpMasking() {
+	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+
+	newImage := pkg.UnsharpMasking(img, 1.0)
+
+	out, _ := os.Create("unsharp_masking.jpg")
+	jpeg.Encode(out, newImage, nil)
+	out.Close()
+}
+
+func testUnsharpMaskingScaled() {
+	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+
+	newImage := pkg.UnsharpMaskingScaled(img, 1.0)
+
+	out, _ := os.Create("unsharp_masking_scaled.jpg")
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }

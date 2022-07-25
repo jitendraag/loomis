@@ -97,7 +97,11 @@ func ScaledLaplacian(img image.Image, maskFn laplacianFilterMask) image.Image {
 	for _, row := range levels {
 		var xPixels []color.Gray
 		for _, value := range row {
-			xPixels = append(xPixels, color.Gray{uint8(value + minimumLevel)})
+			var newLevel int = value + minimumLevel
+			if newLevel > MaxGrayscaleLevels {
+				newLevel = MaxGrayscaleLevels
+			}
+			xPixels = append(xPixels, color.Gray{uint8(newLevel)})
 		}
 		pixels = append(pixels, xPixels)
 	}
