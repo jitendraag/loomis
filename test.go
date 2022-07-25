@@ -41,7 +41,7 @@ func main() {
 
 	switch *command {
 	case "histgray":
-		testFile(*inputFileName)
+		testFile(int(*levels), *inputFileName)
 	case "intensity_levels":
 		testIntensityLevels(int(*levels), *inputFileName, *outputFileName)
 	case "log_transformation":
@@ -83,11 +83,11 @@ func main() {
 	// writeImage()
 }
 
-func testFile(inputFileName string) {
+func testFile(levelCount int, inputFileName string) {
 	// Decode the JPEG data. If reading from file, create a reader with
 	img := pkg.FileNameToImage(inputFileName)
 
-	var levels []int = pkg.HistogramGrayscale(img, 2)
+	var levels []int = pkg.HistogramGrayscale(img, levelCount)
 
 	fmt.Printf("%v\n", levels)
 }
