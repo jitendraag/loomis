@@ -20,10 +20,9 @@ import (
 
 func main() {
 	// TODO: ideally all new commands should self document
-	// TODO: we are ignoring input/output completely right now
 	var command = flag.String("command", "histgray", "Command to execute, possible options: histgray, intensity_levels, log_transformation")
-	// var inputFileName = flag.String("i", "testdata/green-bee-eater-grayscale.jpg", "Input file name")
-	// var outputFileName = flag.String("o", "testdata/output.jpg", "Output file name")
+	var inputFileName = flag.String("i", "testdata/green-bee-eater-grayscale.jpg", "Input file name")
+	var outputFileName = flag.String("o", "testdata/output.jpg", "Output file name")
 	var levels = flag.Float64("levels", 4, "Intensity levels (1 to 256) / constant")
 	var gamma = flag.Float64("gamma", 2.5, "Gamma for power law")
 	var numberOfBits = flag.Uint("bits", 2, "Number of bits to set to zero")
@@ -42,40 +41,40 @@ func main() {
 
 	switch *command {
 	case "histgray":
-		testFile()
+		testFile(*inputFileName)
 	case "intensity_levels":
-		testIntensityLevels(int(*levels))
+		testIntensityLevels(int(*levels), *inputFileName, *outputFileName)
 	case "log_transformation":
 		// Levels being used as the constant
-		testLogTransformation(int(*levels))
+		testLogTransformation(int(*levels), *inputFileName, *outputFileName)
 	case "power_law":
-		testPowerLawTransformation(*levels, *gamma)
+		testPowerLawTransformation(*levels, *gamma, *inputFileName, *outputFileName)
 	case "bitplane_slicing":
-		testBitPlaneSlicing(uint8(*numberOfBits))
+		testBitPlaneSlicing(uint8(*numberOfBits), *inputFileName, *outputFileName)
 	case "bitnumber_slicing":
-		testBitPlaneSlicingBitNumber(uint8(*bitNumber))
+		testBitPlaneSlicingBitNumber(uint8(*bitNumber), *inputFileName, *outputFileName)
 	case "histequalisation":
-		testHistogramEqualisation()
+		testHistogramEqualisation(*inputFileName, *outputFileName)
 	case "histnormal":
-		testNormalisedHistogram()
+		testNormalisedHistogram(*inputFileName)
 	case "gray":
-		testConvertToGrayscale()
+		testConvertToGrayscale(*inputFileName, *outputFileName)
 	case "smooth_spatial":
-		testSmoothingSpatialFilter()
+		testSmoothingSpatialFilter(*inputFileName, *outputFileName)
 	case "nonlinear_smooth_spatial":
-		testNonlinearSmoothingSpatialFilter()
+		testNonlinearSmoothingSpatialFilter(*inputFileName, *outputFileName)
 	case "gaussian_spatial":
-		testGaussianSpatialFilter()
+		testGaussianSpatialFilter(*inputFileName, *outputFileName)
 	case "laplacian":
-		testLaplacian()
+		testLaplacian(*inputFileName, *outputFileName)
 	case "scaled_laplacian":
-		testScaledLaplacian()
+		testScaledLaplacian(*inputFileName, *outputFileName)
 	case "scaled_laplacian_mask":
-		testScaledLaplacianMaskAddition()
+		testScaledLaplacianMaskAddition(*inputFileName, *outputFileName)
 	case "unsharp_masking":
-		testUnsharpMasking()
+		testUnsharpMasking(*inputFileName, *outputFileName)
 	case "unsharp_masking_scaled":
-		testUnsharpMaskingScaled()
+		testUnsharpMaskingScaled(*inputFileName, *outputFileName)
 	default:
 		flag.Usage()
 	}
@@ -84,9 +83,9 @@ func main() {
 	// writeImage()
 }
 
-func testFile() {
+func testFile(inputFileName string) {
 	// Decode the JPEG data. If reading from file, create a reader with
-	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+	img := pkg.FileNameToImage(inputFileName)
 
 	var levels []int = pkg.HistogramGrayscale(img, 2)
 
@@ -118,69 +117,69 @@ func writeImage() {
 	out.Close()
 }
 
-func testIntensityLevels(levelCount int) {
+func testIntensityLevels(levelCount int, inputFileName string, outputFileName string) {
 	// Decode the JPEG data. If reading from file, create a reader with
-	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+	img := pkg.FileNameToImage(inputFileName)
 
 	newImage := pkg.ReduceIntensityLevels(img, levelCount)
 
-	out, _ := os.Create(fmt.Sprintf("intensity%d.jpg", levelCount))
+	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
 
-func testLogTransformation(constant int) {
-	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+func testLogTransformation(constant int, inputFileName string, outputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
 
 	newImage := pkg.LogTransformation(img, constant)
 
-	out, _ := os.Create(fmt.Sprintf("intensity_log_transformation%f.jpg", constant))
+	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
 
-func testPowerLawTransformation(constant float64, gamma float64) {
-	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+func testPowerLawTransformation(constant float64, gamma float64, inputFileName string, outputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
 
 	newImage := pkg.PowerLawTransformation(img, constant, gamma)
 
-	out, _ := os.Create(fmt.Sprintf("intensity_gamma_transformation%d.jpg", constant))
+	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
 
-func testBitPlaneSlicing(numberOfBits uint8) {
-	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+func testBitPlaneSlicing(numberOfBits uint8, inputFileName string, outputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
 
 	newImage := pkg.BitPlaneSlicing(img, numberOfBits)
 
-	out, _ := os.Create(fmt.Sprintf("bit_plane_splicing%d.jpg", numberOfBits))
+	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
 
-func testBitPlaneSlicingBitNumber(bitNumber uint8) {
-	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+func testBitPlaneSlicingBitNumber(bitNumber uint8, inputFileName string, outputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
 
 	newImage := pkg.BitPlaneSlicingBitNumber(img, bitNumber)
 
-	out, _ := os.Create(fmt.Sprintf("bit_plane_splicing%d.jpg", bitNumber))
+	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
 
-func testHistogramEqualisation() {
-	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+func testHistogramEqualisation(inputFileName string, outputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
 
 	newImage := pkg.HistogramEqualisation(img)
 
-	out, _ := os.Create("histogram_equalisation.jpg")
+	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
 
-func testNormalisedHistogram() {
-	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+func testNormalisedHistogram(inputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
 
 	var probabilities []float64 = pkg.NormalisedHistogramGrayscale(img, 0)
 	var meanIntensity float64 = pkg.MeanIntensity(img, 0)
@@ -189,92 +188,92 @@ func testNormalisedHistogram() {
 	fmt.Printf("Mean intensity: %v\n", meanIntensity)
 }
 
-func testConvertToGrayscale() {
-	img := pkg.FileNameToImage("testdata/green-bee-eater-color.jpg")
+func testConvertToGrayscale(inputFileName string, outputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
 
 	newImage := pkg.ConvertToGrayscale(img)
 
-	out, _ := os.Create("grayscale.jpg")
+	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
 
-func testSmoothingSpatialFilter() {
-	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+func testSmoothingSpatialFilter(inputFileName string, outputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
 
 	newImage := pkg.SmoothingSpatialFilter(img, pkg.FiveByFiveUniform)
 
-	out, _ := os.Create("smoothing_spatial.jpg")
+	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
 
-func testNonlinearSmoothingSpatialFilter() {
-	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+func testNonlinearSmoothingSpatialFilter(inputFileName string, outputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
 
 	newImage := pkg.NonlinearSmoothingSpatialFilter(img, 5, pkg.MedianOrder)
 
-	out, _ := os.Create("nonlinear_smoothing_spatial.jpg")
+	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
 
-func testGaussianSpatialFilter() {
-	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+func testGaussianSpatialFilter(inputFileName string, outputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
 
 	newImage := pkg.GaussianSpatialFilter(img, pkg.GaussianFiveByFiveSigmaOne)
 
-	out, _ := os.Create("gaussian_spatial.jpg")
+	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
 
-func testLaplacian() {
-	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+func testLaplacian(inputFileName string, outputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
 
 	newImage := pkg.Laplacian(img, pkg.LaplacianMask4)
 
-	out, _ := os.Create("laplacian_1.jpg")
+	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
 
-func testScaledLaplacian() {
-	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+func testScaledLaplacian(inputFileName string, outputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
 
 	newImage := pkg.ScaledLaplacian(img, pkg.LaplacianMask1)
 
-	out, _ := os.Create("scaled_laplacian_1.jpg")
+	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
 
-func testScaledLaplacianMaskAddition() {
-	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+func testScaledLaplacianMaskAddition(inputFileName string, outputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
 
 	newImage := pkg.ScaledLaplacianMaskAddition(img, pkg.LaplacianMask1)
 
-	out, _ := os.Create("scaled_laplacian_mask_1.jpg")
+	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
 
-func testUnsharpMasking() {
-	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+func testUnsharpMasking(inputFileName string, outputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
 
 	newImage := pkg.UnsharpMasking(img, 1.0)
 
-	out, _ := os.Create("unsharp_masking.jpg")
+	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
 
-func testUnsharpMaskingScaled() {
-	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+func testUnsharpMaskingScaled(inputFileName string, outputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
 
 	newImage := pkg.UnsharpMaskingScaled(img, 1.0)
 
-	out, _ := os.Create("unsharp_masking_scaled.jpg")
+	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }
