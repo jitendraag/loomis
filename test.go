@@ -19,7 +19,8 @@ import (
 )
 
 func main() {
-	// TODO, ideally all new commands should self document
+	// TODO: ideally all new commands should self document
+	// TODO: we are ignoring input/output completely right now
 	var command = flag.String("command", "histgray", "Command to execute, possible options: histgray, intensity_levels, log_transformation")
 	// var inputFileName = flag.String("i", "testdata/green-bee-eater-grayscale.jpg", "Input file name")
 	// var outputFileName = flag.String("o", "testdata/output.jpg", "Output file name")
@@ -63,6 +64,8 @@ func main() {
 		testSmoothingSpatialFilter()
 	case "nonlinear_smooth_spatial":
 		testNonlinearSmoothingSpatialFilter()
+	case "gaussian_spatial":
+		testGaussianSpatialFilter()
 	case "laplacian":
 		testLaplacian()
 	case "scaled_laplacian":
@@ -208,6 +211,16 @@ func testNonlinearSmoothingSpatialFilter() {
 	newImage := pkg.NonlinearSmoothingSpatialFilter(img, 5, pkg.MedianOrder)
 
 	out, _ := os.Create("nonlinear_smoothing_spatial.jpg")
+	jpeg.Encode(out, newImage, nil)
+	out.Close()
+}
+
+func testGaussianSpatialFilter() {
+	img := pkg.FileNameToImage("testdata/green-bee-eater-grayscale.jpg")
+
+	newImage := pkg.GaussianSpatialFilter(img, pkg.GaussianFiveByFiveSigmaOne)
+
+	out, _ := os.Create("gaussian_spatial.jpg")
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
 }

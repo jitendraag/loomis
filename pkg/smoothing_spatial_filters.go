@@ -6,10 +6,10 @@ import (
 	"sort"
 )
 
-type filterMask func() [][]uint8
+type FilterMask func() [][]uint8
 type orderStatistic func([][]uint8) uint8
 
-func SmoothingSpatialFilter(img image.Image, maskFn filterMask) image.Image {
+func SmoothingSpatialFilter(img image.Image, maskFn FilterMask) image.Image {
 	// This is from Section 3.5.1 of DIP book
 	bounds := img.Bounds()
 	var pixels [][]color.Gray
