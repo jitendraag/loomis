@@ -59,7 +59,7 @@ func PowerLawTransformation(img image.Image, constant float64, gamma float64) im
 		var xPixels []color.Gray
 		for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 			c := color.GrayModel.Convert(img.At(x, y)).(color.Gray)
-			level := float64(constant) * math.Log(1+float64(c.Y))
+			level := math.Pow(float64(constant)*math.Log(1+float64(c.Y)), gamma)
 
 			if level > float64(maxIntensity.Y) {
 				maxIntensity = color.Gray{uint8(level)}
