@@ -75,6 +75,8 @@ func main() {
 		testUnsharpMasking(*inputFileName, *outputFileName)
 	case "unsharp_masking_scaled":
 		testUnsharpMaskingScaled(*inputFileName, *outputFileName)
+	case "gradient":
+		testGradientFilter(int(*levels), *inputFileName, *outputFileName)
 	default:
 		flag.Usage()
 	}
@@ -272,6 +274,30 @@ func testUnsharpMaskingScaled(inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
 	newImage := pkg.UnsharpMaskingScaled(img, 1.0)
+
+	out, _ := os.Create(outputFileName)
+	jpeg.Encode(out, newImage, nil)
+	out.Close()
+}
+
+func testGradientFilter(levels int, inputFileName string, outputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
+	var newImage image.Image
+	// TODO, find a better way to specify these operators
+	switch levels {
+	case 1:
+		newImage = pkg.GradientFilter(img, pkg.SobelOperator1)
+	case 2:
+
+		newImage = pkg.GradientFilter(img, pkg.SobelOperator2)
+	case 3:
+		newImage = pkg.GradientFilter(img, pkg.RobertsCrossOperator1)
+	case 4:
+		newImage = pkg.GradientFilter(img, pkg.RobertsCrossOperator2)
+	default:
+		fmt.Printf("Only values 1-4 are supported for gradient filter.")
+		newImage = img
+	}
 
 	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
