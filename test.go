@@ -77,6 +77,8 @@ func main() {
 		testUnsharpMaskingScaled(*inputFileName, *outputFileName)
 	case "gradient":
 		testGradientFilter(int(*levels), *inputFileName, *outputFileName)
+	case "dft":
+		testDiscreetFourierTransform(*inputFileName, *outputFileName)
 	default:
 		flag.Usage()
 	}
@@ -298,6 +300,16 @@ func testGradientFilter(levels int, inputFileName string, outputFileName string)
 		fmt.Printf("Only values 1-4 are supported for gradient filter.")
 		newImage = img
 	}
+
+	out, _ := os.Create(outputFileName)
+	jpeg.Encode(out, newImage, nil)
+	out.Close()
+}
+
+func testDiscreetFourierTransform(inputFileName string, outputFileName string) {
+	img := pkg.FileNameToImage(inputFileName)
+
+	newImage := pkg.DiscreetFourierTransform(img)
 
 	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)

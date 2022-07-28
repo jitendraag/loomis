@@ -1,7 +1,6 @@
 package pkg
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"math"
@@ -62,6 +61,7 @@ func PowerLawTransformation(img image.Image, constant float64, gamma float64) im
 			level := math.Pow(float64(constant)*math.Log(1+float64(c.Y)), gamma)
 
 			if level > float64(maxIntensity.Y) {
+				// TODO, this doesn't feel right. We should probably rescale the whole spectum once gamma is used
 				maxIntensity = color.Gray{uint8(level)}
 			}
 
@@ -143,7 +143,7 @@ func BitPlaneSlicingBitNumber(img image.Image, bitNumber uint8) image.Image {
 	bitMask = bitMask << uint8(bitNumber)
 	bitMask = ^bitMask
 
-	fmt.Printf("%v\n", bitMask)
+	// fmt.Printf("%v\n", bitMask)
 
 	for x := bounds.Min.X; x < bounds.Max.X; x++ {
 		var xPixels []color.Gray
