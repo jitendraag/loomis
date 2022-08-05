@@ -79,6 +79,10 @@ func main() {
 		testGradientFilter(int(*levels), *inputFileName, *outputFileName)
 	case "dft":
 		testDiscreetFourierTransform(*inputFileName, *outputFileName)
+	case "gaussian_pdf":
+		testGaussianPdf()
+	case "rayleigh_pdf":
+		testRayleighPdf()
 	default:
 		flag.Usage()
 	}
@@ -205,7 +209,7 @@ func testConvertToGrayscale(inputFileName string, outputFileName string) {
 func testSmoothingSpatialFilter(inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.SmoothingSpatialFilter(img, pkg.FiveByFiveUniform)
+	newImage := pkg.SmoothingSpatialFilter(img, pkg.ThreeByThreeWeighted)
 
 	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
@@ -215,7 +219,7 @@ func testSmoothingSpatialFilter(inputFileName string, outputFileName string) {
 func testNonlinearSmoothingSpatialFilter(inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.NonlinearSmoothingSpatialFilter(img, 5, pkg.MedianOrder)
+	newImage := pkg.NonlinearSmoothingSpatialFilter(img, 5, pkg.MaxOrder)
 
 	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
@@ -314,4 +318,16 @@ func testDiscreetFourierTransform(inputFileName string, outputFileName string) {
 	out, _ := os.Create(outputFileName)
 	jpeg.Encode(out, newImage, nil)
 	out.Close()
+}
+
+
+func testGaussianPdf() {
+	pdf := pkg.GaussianPdf(128, 20)
+	fmt.Printf("PDF: %v", pdf)
+}
+
+
+func testRayleighPdf() {
+	pdf := pkg.RayleighPdf(0, 0.4)
+	fmt.Printf("PDF: %v", pdf)
 }

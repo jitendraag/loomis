@@ -128,7 +128,7 @@ func MaxOrder(levels [][]uint8) uint8 {
 
 	for _, row := range levels {
 		for _, value := range row {
-			if value < maximum {
+			if value > maximum {
 				maximum = value
 			}
 		}
