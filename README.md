@@ -1,4 +1,34 @@
-I decided to build Loomis as I read the highly popular text book Digital Image Processing. This is designed to be a simple Golang implementation of algorithms mentioned in the book. While I will do the simple implementations, I will also attempt to make a concurrent version of these algorithms.
+# Loomis
+
+A Golang implementation of digital image processing algorithms based on "Digital Image Processing" by Gonzalez and Woods. The project offers both sequential and concurrent implementations of various image processing techniques.
+
+## Features
+
+- Intensity Transformations
+  - Grayscale conversion
+  - Log transformation
+  - Power-law (Gamma) transformation
+  - Bit plane slicing
+  - Bit number slicing
+  - Histogram equalization
+
+- Spatial Filtering
+  - Linear smoothing filters
+  - Non-linear smoothing filters
+  - Gaussian smoothing
+  - Laplacian sharpening
+  - Unsharp masking
+  - Gradient filters (Sobel, Roberts Cross)
+
+- Frequency Domain
+  - Discrete Fourier Transform
+
+- Statistical Functions
+  - Gaussian PDF
+  - Rayleigh PDF
+  - Histogram analysis
+
+## Installation
 
 Running:
 $cd pkg
