@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"log"
@@ -21,27 +22,32 @@ func FileNameToImage(filename string) image.Image {
 	return img
 }
 
-func PixelsToImage(pixels [][]color.Gray) image.Image {
-	rect := image.Rect(0, 0, len(pixels), len(pixels[0]))
-	newImage := image.NewRGBA(rect)
+func PixelsToImage(pixels [][]color.Gray) (image.Image, error) {
+	// Validate input
+	if len(pixels) == 0 {
+		return nil, fmt.Errorf("empty pixel array")
+	}
 
-	// TODO, should this also loop through y first?
-	// TODO, move writing a 2D pixel array to an image to another function
-	for x := 0; x < len(pixels); x++ {
-		for y := 0; y < len(pixels[0]); y++ {
-			q := pixels[x]
-			if q == nil {
-				continue
-			}
-			p := pixels[x][y]
-			// if p == nil {
-			// 	continue
-			// }
-			original, ok := color.GrayModel.Convert(p).(color.Gray)
-			if ok {
-				newImage.Set(x, y, original)
-			}
+	height := len(pixels)
+	width := len(pixels[0])
+
+	// Validate consistent dimensions
+	for i := range pixels {
+		if len(pixels[i]) != width {
+			return nil, fmt.Errorf("inconsistent pixel array dimensions at row %d", i)
 		}
 	}
-	return newImage
+
+	// Create grayscale image instead of RGBA
+	rect := image.Rect(0, 0, height, width)
+	newImage := image.NewGray(rect)
+
+	// Loop through y first for better performance
+	for y := 0; y < width; y++ {
+		for x := 0; x < height; x++ {
+			newImage.Set(x, y, pixels[x][y])
+		}
+	}
+
+	return newImage, nil
 }

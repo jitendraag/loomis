@@ -92,11 +92,9 @@ func main() {
 }
 
 func testFile(levelCount int, inputFileName string) {
-	// Decode the JPEG data. If reading from file, create a reader with
 	img := pkg.FileNameToImage(inputFileName)
 
-	var levels []int = pkg.HistogramGrayscale(img, levelCount)
-
+	levels := pkg.HistogramGrayscale(img, levelCount)
 	fmt.Printf("%v\n", levels)
 }
 
@@ -126,64 +124,117 @@ func writeImage() {
 }
 
 func testIntensityLevels(levelCount int, inputFileName string, outputFileName string) {
-	// Decode the JPEG data. If reading from file, create a reader with
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.ReduceIntensityLevels(img, levelCount)
+	newImage, err := pkg.ReduceIntensityLevels(img, levelCount)
+	if err != nil {
+		log.Fatalf("Failed to process image: %v", err)
+	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
 
 func testLogTransformation(constant int, inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.LogTransformation(img, constant)
+	newImage, err := pkg.LogTransformation(img, constant)
+	if err != nil {
+		log.Fatalf("Failed to process image: %v", err)
+	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
 
 func testPowerLawTransformation(constant float64, gamma float64, inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.PowerLawTransformation(img, constant, gamma)
+	newImage, err := pkg.PowerLawTransformation(img, constant, gamma)
+	if err != nil {
+		log.Fatalf("Failed to process image: %v", err)
+	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
 
 func testBitPlaneSlicing(numberOfBits uint8, inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.BitPlaneSlicing(img, numberOfBits)
+	newImage, err := pkg.BitPlaneSlicing(img, numberOfBits)
+	if err != nil {
+		log.Fatalf("Failed to process image: %v", err)
+	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
 
 func testBitPlaneSlicingBitNumber(bitNumber uint8, inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.BitPlaneSlicingBitNumber(img, bitNumber)
+	newImage, err := pkg.BitPlaneSlicingBitNumber(img, bitNumber)
+	if err != nil {
+		log.Fatalf("Failed to process image: %v", err)
+	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
 
 func testHistogramEqualisation(inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.HistogramEqualisation(img)
+	newImage, err := pkg.HistogramEqualisation(img)
+	if err != nil {
+		log.Fatalf("Failed to process image: %v", err)
+	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
 
 func testNormalisedHistogram(inputFileName string) {
@@ -199,133 +250,232 @@ func testNormalisedHistogram(inputFileName string) {
 func testConvertToGrayscale(inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.ConvertToGrayscale(img)
+	newImage, err := pkg.ConvertToGrayscale(img)
+	if err != nil {
+		log.Fatalf("Failed to convert image: %v", err)
+	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
 
 func testSmoothingSpatialFilter(inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.SmoothingSpatialFilter(img, pkg.ThreeByThreeWeighted)
+	newImage, err := pkg.SmoothingSpatialFilter(img, pkg.ThreeByThreeWeighted)
+	if err != nil {
+		log.Fatalf("Failed to process image: %v", err)
+	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
 
 func testNonlinearSmoothingSpatialFilter(inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.NonlinearSmoothingSpatialFilter(img, 5, pkg.MaxOrder)
+	newImage, err := pkg.NonlinearSmoothingSpatialFilter(img, 5, pkg.MaxOrder)
+	if err != nil {
+		log.Fatalf("Failed to process image: %v", err)
+	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
 
 func testGaussianSpatialFilter(inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.GaussianSpatialFilter(img, pkg.GaussianFiveByFiveSigmaOne)
+	newImage, err := pkg.GaussianSpatialFilter(img, pkg.GaussianFiveByFiveSigmaOne)
+	if err != nil {
+		log.Fatalf("Failed to process image: %v", err)
+	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
 
 func testLaplacian(inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.Laplacian(img, pkg.LaplacianMask4)
+	newImage, err := pkg.Laplacian(img, pkg.LaplacianMask4)
+	if err != nil {
+		log.Fatalf("Failed to process image: %v", err)
+	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
 
 func testScaledLaplacian(inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.ScaledLaplacian(img, pkg.LaplacianMask1)
+	newImage, err := pkg.ScaledLaplacian(img, pkg.LaplacianMask1)
+	if err != nil {
+		log.Fatalf("Failed to process image: %v", err)
+	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
 
 func testScaledLaplacianMaskAddition(inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.ScaledLaplacianMaskAddition(img, pkg.LaplacianMask1)
+	newImage, err := pkg.ScaledLaplacianMaskAddition(img, pkg.LaplacianMask1)
+	if err != nil {
+		log.Fatalf("Failed to process image: %v", err)
+	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
 
 func testUnsharpMasking(inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.UnsharpMasking(img, 1.0)
+	newImage, err := pkg.UnsharpMasking(img, 1.0)
+	if err != nil {
+		log.Fatalf("Failed to process image: %v", err)
+	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
 
 func testUnsharpMaskingScaled(inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.UnsharpMaskingScaled(img, 1.0)
+	newImage, err := pkg.UnsharpMaskingScaled(img, 1.0)
+	if err != nil {
+		log.Fatalf("Failed to process image: %v", err)
+	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
 
 func testGradientFilter(levels int, inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 	var newImage image.Image
+	var err error
+
 	// TODO, find a better way to specify these operators
 	switch levels {
 	case 1:
-		newImage = pkg.GradientFilter(img, pkg.SobelOperator1)
+		newImage, err = pkg.GradientFilter(img, pkg.SobelOperator1)
 	case 2:
-
-		newImage = pkg.GradientFilter(img, pkg.SobelOperator2)
+		newImage, err = pkg.GradientFilter(img, pkg.SobelOperator2)
 	case 3:
-		newImage = pkg.GradientFilter(img, pkg.RobertsCrossOperator1)
+		newImage, err = pkg.GradientFilter(img, pkg.RobertsCrossOperator1)
 	case 4:
-		newImage = pkg.GradientFilter(img, pkg.RobertsCrossOperator2)
+		newImage, err = pkg.GradientFilter(img, pkg.RobertsCrossOperator2)
 	default:
 		fmt.Printf("Only values 1-4 are supported for gradient filter.")
 		newImage = img
 	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	if err != nil {
+		log.Fatalf("Failed to process image: %v", err)
+	}
+
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
 
 func testDiscreetFourierTransform(inputFileName string, outputFileName string) {
 	img := pkg.FileNameToImage(inputFileName)
 
-	newImage := pkg.DiscreetFourierTransform(img)
+	newImage, err := pkg.DiscreetFourierTransform(img)
+	if err != nil {
+		log.Fatalf("Failed to process image: %v", err)
+	}
 
-	out, _ := os.Create(outputFileName)
-	jpeg.Encode(out, newImage, nil)
-	out.Close()
+	out, err := os.Create(outputFileName)
+	if err != nil {
+		log.Fatalf("Failed to create output file: %v", err)
+	}
+	defer out.Close()
+
+	if err := jpeg.Encode(out, newImage, nil); err != nil {
+		log.Fatalf("Failed to encode image: %v", err)
+	}
 }
-
 
 func testGaussianPdf() {
 	pdf := pkg.GaussianPdf(128, 20)
 	fmt.Printf("PDF: %v", pdf)
 }
-
 
 func testRayleighPdf() {
 	pdf := pkg.RayleighPdf(0, 0.4)

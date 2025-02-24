@@ -1,12 +1,13 @@
 package pkg
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"math"
 )
 
-func LogTransformation(img image.Image, constant int) image.Image {
+func LogTransformation(img image.Image, constant int) (image.Image, error) {
 	// This is from Section 3.2.2 of DIP book
 	// TODO, should the constant be a float?
 	bounds := img.Bounds()
@@ -35,18 +36,22 @@ func LogTransformation(img image.Image, constant int) image.Image {
 		}
 	}
 
-	return PixelsToImage(pixels)
+	newImage, err := PixelsToImage(pixels)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
+	return newImage, nil
 }
 
-func GammaTransformation(img image.Image, constant float64, gamma float64) image.Image {
+func GammaTransformation(img image.Image, constant float64, gamma float64) (image.Image, error) {
 	return PowerLawTransformation(img, constant, gamma)
 }
 
-func PowerLawTransformation(img image.Image, constant float64, gamma float64) image.Image {
+func PowerLawTransformation(img image.Image, constant float64, gamma float64) (image.Image, error) {
 	// This is from Section 3.2.3 of DIP book
 	if constant <= 0 || gamma <= 0 {
 		// XXX: return error in this case?
-		return img
+		return image.NewGray(image.Rect(0, 0, 1, 1)), fmt.Errorf("constant and gamma must be greater than 0, got %f and %f", constant, gamma)
 	}
 	bounds := img.Bounds()
 	var pixels [][]color.Gray
@@ -79,7 +84,11 @@ func PowerLawTransformation(img image.Image, constant float64, gamma float64) im
 		}
 	}
 
-	return PixelsToImage(pixels)
+	newImage, err := PixelsToImage(pixels)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
+	return newImage, nil
 }
 
 func ContrastStretching(img image.Image) image.Image {
@@ -101,14 +110,14 @@ func ContrastStretching(img image.Image) image.Image {
 	return img
 }
 
-func BitPlaneSlicing(img image.Image, numberOfBits uint8) image.Image {
+func BitPlaneSlicing(img image.Image, numberOfBits uint8) (image.Image, error) {
 	// This is from Section 3.2.4 of DIP book
 	// We set given number of least signficant bits to zero
 	bounds := img.Bounds()
 	var pixels [][]color.Gray
 
 	if numberOfBits >= 8 || numberOfBits < 1 {
-		return img
+		return image.NewGray(image.Rect(0, 0, 1, 1)), fmt.Errorf("number of bits must be between 1 and 7, got %d", numberOfBits)
 	}
 
 	var bitMask uint8 = 1<<8 - 1
@@ -126,17 +135,21 @@ func BitPlaneSlicing(img image.Image, numberOfBits uint8) image.Image {
 		pixels = append(pixels, xPixels)
 	}
 
-	return PixelsToImage(pixels)
+	newImage, err := PixelsToImage(pixels)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
+	return newImage, nil
 }
 
-func BitPlaneSlicingBitNumber(img image.Image, bitNumber uint8) image.Image {
+func BitPlaneSlicingBitNumber(img image.Image, bitNumber uint8) (image.Image, error) {
 	// This is from Section 3.2.4 of DIP book
 	// We set the given bit to zero
 	bounds := img.Bounds()
 	var pixels [][]color.Gray
 
 	if bitNumber >= 8 {
-		return img
+		return image.NewGray(image.Rect(0, 0, 1, 1)), fmt.Errorf("bit number must be between 0 and 7, got %d", bitNumber)
 	}
 
 	var bitMask uint8 = 1
@@ -155,10 +168,14 @@ func BitPlaneSlicingBitNumber(img image.Image, bitNumber uint8) image.Image {
 		pixels = append(pixels, xPixels)
 	}
 
-	return PixelsToImage(pixels)
+	newImage, err := PixelsToImage(pixels)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
+	return newImage, nil
 }
 
-func ConvertToGrayscale(img image.Image) image.Image {
+func ConvertToGrayscale(img image.Image) (image.Image, error) {
 	bounds := img.Bounds()
 	var pixels [][]color.Gray
 
@@ -171,5 +188,9 @@ func ConvertToGrayscale(img image.Image) image.Image {
 		pixels = append(pixels, xPixels)
 	}
 
-	return PixelsToImage(pixels)
+	newImage, err := PixelsToImage(pixels)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
+	return newImage, nil
 }

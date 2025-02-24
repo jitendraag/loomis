@@ -7,7 +7,7 @@ import (
 
 type laplacianFilterMask func() [][]int
 
-func Laplacian(img image.Image, maskFn laplacianFilterMask) image.Image {
+func Laplacian(img image.Image, maskFn laplacianFilterMask) (image.Image, error) {
 	// This is from Section 3.6.2 of DIP book
 	// TODO, not using smoothing filters because Laplacian mask has negative values, combine both methods
 	bounds := img.Bounds()
@@ -48,10 +48,14 @@ func Laplacian(img image.Image, maskFn laplacianFilterMask) image.Image {
 		pixels = append(pixels, xPixels)
 	}
 
-	return PixelsToImage(pixels)
+	newImage, err := PixelsToImage(pixels)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
+	return newImage, nil
 }
 
-func ScaledLaplacian(img image.Image, maskFn laplacianFilterMask) image.Image {
+func ScaledLaplacian(img image.Image, maskFn laplacianFilterMask) (image.Image, error) {
 	// This is from Section 3.6.2 of DIP book
 	// TODO, not using smoothing filters because Laplacian mask has negative values, combine both methods
 	bounds := img.Bounds()
@@ -106,12 +110,16 @@ func ScaledLaplacian(img image.Image, maskFn laplacianFilterMask) image.Image {
 		pixels = append(pixels, xPixels)
 	}
 
-	return PixelsToImage(pixels)
+	newImage, err := PixelsToImage(pixels)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
+	return newImage, nil
 }
 
-func ScaledLaplacianMaskAddition(img image.Image, maskFn laplacianFilterMask) image.Image {
+func ScaledLaplacianMaskAddition(img image.Image, maskFn laplacianFilterMask) (image.Image, error) {
 	// This is from Section 3.6.2 of DIP book
-	maskImg := ScaledLaplacian(img, maskFn)
+	maskImg, err := ScaledLaplacian(img, maskFn)
 
 	bounds := img.Bounds()
 	var pixels [][]color.Gray
@@ -126,7 +134,11 @@ func ScaledLaplacianMaskAddition(img image.Image, maskFn laplacianFilterMask) im
 		pixels = append(pixels, xPixels)
 	}
 
-	return PixelsToImage(pixels)
+	newImage, err := PixelsToImage(pixels)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
+	return newImage, nil
 }
 
 // Sample functions for laplacian transformations

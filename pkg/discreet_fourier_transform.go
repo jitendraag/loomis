@@ -8,7 +8,7 @@ import (
 )
 
 // NOTE: This method shouldn't really be used in production, use fast fourier tranform implementation instead.
-func DiscreetFourierTransform(img image.Image) image.Image {
+func DiscreetFourierTransform(img image.Image) (image.Image, error) {
 	// This is from Section 4.6.4 of DIP book
 	// return img
 	bounds := img.Bounds()
@@ -40,5 +40,9 @@ func DiscreetFourierTransform(img image.Image) image.Image {
 	fmt.Printf("Real: %v", transformedReal)
 	fmt.Printf("Imaginary: %v", transformedImaginary)
 
-	return PixelsToImage(pixels)
+	newImage, err := PixelsToImage(pixels)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
+	return newImage, nil
 }

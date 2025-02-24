@@ -8,7 +8,7 @@ import (
 
 type GradientMask func() [][]int
 
-func GradientFilter(img image.Image, maskFn GradientMask) image.Image {
+func GradientFilter(img image.Image, maskFn GradientMask) (image.Image, error) {
 	// TODO: Some of this is similar to smoothing spatial filter
 	// This is from Section 3.5.1 of DIP book
 	bounds := img.Bounds()
@@ -35,7 +35,11 @@ func GradientFilter(img image.Image, maskFn GradientMask) image.Image {
 		pixels = append(pixels, xPixels)
 	}
 
-	return PixelsToImage(pixels)
+	newImage, err := PixelsToImage(pixels)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
+	return newImage, nil
 }
 
 func SobelOperator1() [][]int {

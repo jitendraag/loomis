@@ -9,7 +9,7 @@ import (
 type FilterMask func() [][]uint8
 type orderStatistic func([][]uint8) uint8
 
-func SmoothingSpatialFilter(img image.Image, maskFn FilterMask) image.Image {
+func SmoothingSpatialFilter(img image.Image, maskFn FilterMask) (image.Image, error) {
 	// This is from Section 3.5.1 of DIP book
 	bounds := img.Bounds()
 	var pixels [][]color.Gray
@@ -43,10 +43,14 @@ func SmoothingSpatialFilter(img image.Image, maskFn FilterMask) image.Image {
 		pixels = append(pixels, xPixels)
 	}
 
-	return PixelsToImage(pixels)
+	newImage, err := PixelsToImage(pixels)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
+	return newImage, nil
 }
 
-func NonlinearSmoothingSpatialFilter(img image.Image, windowSize uint, statisticFn orderStatistic) image.Image {
+func NonlinearSmoothingSpatialFilter(img image.Image, windowSize uint, statisticFn orderStatistic) (image.Image, error) {
 	// This is from Section 3.5.2 of DIP book
 	bounds := img.Bounds()
 	var pixels [][]color.Gray
@@ -78,7 +82,11 @@ func NonlinearSmoothingSpatialFilter(img image.Image, windowSize uint, statistic
 		pixels = append(pixels, xPixels)
 	}
 
-	return PixelsToImage(pixels)
+	newImage, err := PixelsToImage(pixels)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
+	return newImage, nil
 }
 
 // Sample functions for linear transformations

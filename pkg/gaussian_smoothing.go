@@ -24,7 +24,7 @@ func GaussianFiveByFiveSigmaOne() [][]uint8 {
 	}
 }
 
-func GaussianSpatialFilter(img image.Image, maskFn FilterMask) image.Image {
+func GaussianSpatialFilter(img image.Image, maskFn FilterMask) (image.Image, error) {
 	// TODO: how to generate these filters for sigma 2, 3 and for 7x7 kernels?
 	// NOTE: Still keeping a separate entry point for Gaussian because in future kernel size and standard deviation will become parameters
 	return SmoothingSpatialFilter(img, maskFn)

@@ -7,26 +7,38 @@ import (
 	"image/color"
 )
 
-func UnsharpMasking(img image.Image, maskMultiplier float64) image.Image {
+func UnsharpMasking(img image.Image, maskMultiplier float64) (image.Image, error) {
 	// This is from Section 3.6.3 of DIP book
 	// 1. Smooth / Blur
 	// 2. Subtraction
 	// 3. Mask application
-	var smoothImage image.Image = GaussianSpatialFilter(img, GaussianFiveByFiveSigmaOne)
+	smoothImage, err := GaussianSpatialFilter(img, GaussianFiveByFiveSigmaOne)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
 	var mask [][]color.Gray = SubtractImage(img, smoothImage)
-	var maskedImage image.Image = AddMask(img, mask, maskMultiplier)
-	return maskedImage
+	maskedImage, err := AddMask(img, mask, maskMultiplier)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
+	return maskedImage, nil
 }
 
-func UnsharpMaskingScaled(img image.Image, maskMultiplier float64) image.Image {
+func UnsharpMaskingScaled(img image.Image, maskMultiplier float64) (image.Image, error) {
 	// This is from Section 3.6.3 of DIP book
-	var smoothImage image.Image = GaussianSpatialFilter(img, GaussianFiveByFiveSigmaOne)
+	smoothImage, err := GaussianSpatialFilter(img, GaussianFiveByFiveSigmaOne)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
 	var mask [][]color.Gray = SubtractImageScaled(img, smoothImage)
-	var maskedImage image.Image = AddMask(img, mask, maskMultiplier)
-	return maskedImage
+	maskedImage, err := AddMask(img, mask, maskMultiplier)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
+	return maskedImage, nil
 }
 
-func AddMask(img1 image.Image, mask [][]color.Gray, maskMultiplier float64) image.Image {
+func AddMask(img1 image.Image, mask [][]color.Gray, maskMultiplier float64) (image.Image, error) {
 	// TODO: Can this and Laplacian operations be generalized?
 	var pixels [][]color.Gray
 	bounds1 := img1.Bounds()
@@ -48,7 +60,11 @@ func AddMask(img1 image.Image, mask [][]color.Gray, maskMultiplier float64) imag
 		pixels = append(pixels, xPixels)
 	}
 
-	return PixelsToImage(pixels)
+	newImage, err := PixelsToImage(pixels)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
+	return newImage, nil
 }
 
 func SubtractImage(img1 image.Image, img2 image.Image) [][]color.Gray {

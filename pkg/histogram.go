@@ -55,7 +55,7 @@ func MeanIntensity(img image.Image, levelCount int) float64 {
 	return meanIntensity
 }
 
-func HistogramEqualisation(img image.Image) image.Image {
+func HistogramEqualisation(img image.Image) (image.Image, error) {
 	// This is from Figure 3.3.1 of DIP book
 	// NOTE: The operation is meant to run on grayscale image only
 	var levels []int = make([]int, MaxGrayscaleLevels)
@@ -107,10 +107,14 @@ func HistogramEqualisation(img image.Image) image.Image {
 		pixels = append(pixels, xPixels)
 	}
 
-	return PixelsToImage(pixels)
+	newImage, err := PixelsToImage(pixels)
+	if err != nil {
+		return image.NewGray(image.Rect(0, 0, 1, 1)), err
+	}
+	return newImage, nil
 }
 
-func HistogramMatching(img image.Image) image.Image {
+func HistogramMatching(img image.Image) (image.Image, error) {
 	// TODO: Need to understand how specific histogram inputs are given / estimated
-	return img
+	return img, nil
 }
